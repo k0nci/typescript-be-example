@@ -1,19 +1,15 @@
 import express from 'express';
+import { NodeEnv } from './util';
+import middlewares from './util/middlewares';
+
+const NODE_ENV = process.env.NODE_ENV as NodeEnv;
 
 export const app = express();
 
-app.use((req, res, next) => {
+app.get('/', (req, res, next) => {
 
 });
 
-app.use([(req, res, next) => {
+app.use(middlewares.notFound());
 
-}]);
-
-app.use((err, req, res, next) => {
-
-});
-
-app.use([(err, req, res, next) => {
-
-}]);
+app.use(middlewares.error(NODE_ENV));
