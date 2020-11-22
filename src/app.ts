@@ -1,6 +1,7 @@
 import express from 'express';
-import { NodeEnv } from './util';
-import middlewares from './util/middlewares';
+import bodyParser from 'body-parser';
+import { NodeEnv } from './utils';
+import middlewares from './utils/middlewares';
 
 // Routes
 import { router as healtz } from './routes/healtz';
@@ -8,6 +9,9 @@ import { router as healtz } from './routes/healtz';
 const NODE_ENV = process.env.NODE_ENV as NodeEnv;
 
 export const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/healtz', healtz);
 
