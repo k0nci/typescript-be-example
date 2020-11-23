@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import { NodeEnv } from '..';
+import { NodeEnv } from '../../types';
 import { HttpError } from '../errors/HttpError';
 
 type ResBody = {
