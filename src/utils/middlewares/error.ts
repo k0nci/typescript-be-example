@@ -1,6 +1,7 @@
 import { ErrorRequestHandler } from 'express';
 import { NodeEnv } from '..';
 import { HttpError } from '../errors/HttpError';
+import { InternalServerError } from '../errors/InternalServerError';
 import { getLogger } from '../logger';
 
 const LOGGER = getLogger();
@@ -29,16 +30,24 @@ function prodError(err: HttpError): ResBody {
 
 export function middleware(env: NodeEnv): ErrorRequestHandler {
   return (err, req, res, next) => {
-    let body: ResBody;
-    if (env === NodeEnv.DEVELOPMENT) {
-      body = devError(err);
+    let httpErr: HttpError;
+    // Check if instance of HttpError
+    if (!err.status) {
+      httpErr = new InternalServerError();
     } else {
-      body = prodError(err);
+      httpErr = err;
     }
 
-    if (err.status >= 500) {
+    let body: ResBody;
+    if (env === NodeEnv.DEVELOPMENT) {
+      body = devError(httpErr);
+    } else {
+      body = prodError(httpErr);
+    }
+
+    if (httpErr.status >= 500) {
       LOGGER.error(err);
     }
-    return res.status(err.status).json(body).end();
+    return res.status(httpErr.status).json(body).end();
   };
 }

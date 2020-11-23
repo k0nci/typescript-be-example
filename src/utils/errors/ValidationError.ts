@@ -1,7 +1,10 @@
 import { HttpError } from './HttpError';
 
 export class ValidationError extends HttpError {
-  constructor(message: string = 'Validation error', status: number = 400) {
-    super(message, status);
+  private static STATUS = 400;
+
+  constructor(message: string = 'Validation error') {
+    super(message, ValidationError.STATUS);
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
