@@ -1,6 +1,9 @@
 import { ErrorRequestHandler } from 'express';
-import { NodeEnv } from '../../types';
+import { NodeEnv } from '..';
 import { HttpError } from '../errors/HttpError';
+import { getLogger } from '../logger';
+
+const LOGGER = getLogger();
 
 type ResBody = {
   'error': string;
@@ -33,6 +36,9 @@ export function middleware(env: NodeEnv): ErrorRequestHandler {
       body = prodError(err);
     }
 
+    if (err.status >= 500) {
+      LOGGER.error(err);
+    }
     return res.status(err.status).json(body).end();
   };
 }
