@@ -1,5 +1,8 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node,vscode,macos,intellij+all
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,vscode,macos,intellij+all
+# Created by https://www.toptal.com/developers/gitignore/api/node,macos,vscode,intellij+all,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,vscode,intellij+all,dotenv
+
+### dotenv ###
+.env
 
 ### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -191,7 +194,6 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .env.test
 .env*.local
 
@@ -238,7 +240,7 @@ dist
 !.vscode/extensions.json
 *.code-workspace
 
-# End of https://www.toptal.com/developers/gitignore/api/node,vscode,macos,intellij+all
+# End of https://www.toptal.com/developers/gitignore/api/node,macos,vscode,intellij+all,dotenv
 
 # Custom
 build
