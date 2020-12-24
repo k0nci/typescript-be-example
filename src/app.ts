@@ -1,12 +1,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { NodeEnv } from './types';
 import middlewares from './utils/middlewares';
 
 // Routes
 import { router as healtz } from './routes/healtz';
 
-const NODE_ENV = process.env.NODE_ENV as NodeEnv;
+const NODE_ENV = process.env.NODE_ENV;
 
 export const app = express();
 

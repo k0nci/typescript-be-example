@@ -3,3 +3,11 @@ export const enum NodeEnv {
   STAGING = 'staging',
   PRODUCTION = 'production',
 }
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      NODE_ENV: NodeEnv
+    }
+  }
+}

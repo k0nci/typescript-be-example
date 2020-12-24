@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import { NodeEnv } from '../../types';
+import { NodeEnv } from '../../types/node';
 import { HttpError } from '../errors/HttpError';
 import { InternalServerError } from '../errors/InternalServerError';
 import { getLogger } from '../logger';
