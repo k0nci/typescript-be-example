@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { NodeEnv } from './utils';
+import { NodeEnv } from './types';
 import middlewares from './utils/middlewares';
 
 // Routes
