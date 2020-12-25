@@ -1,6 +1,6 @@
 import log4js from 'log4js';
 
-export enum LogLevels {
+export const enum LogLevels {
   FATAL = 'fatal',
   ERROR = 'error',
   WARN = 'warn',
