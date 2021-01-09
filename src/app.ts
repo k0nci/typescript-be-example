@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import middlewares from './utils/middlewares';
 
 // Routes
-import { router as healtz } from './routes/healtz';
+import { router as livez } from './routes/livez';
 
 const NODE_ENV = process.env.NODE_ENV;
 
@@ -14,7 +14,7 @@ app.use(middlewares.reqLogger());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/healtz', healtz);
+app.use('/livez', livez);
 
 app.use(middlewares.notFound());
 
