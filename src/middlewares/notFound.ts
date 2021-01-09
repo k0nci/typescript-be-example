@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { HttpError } from '../errors/HttpError';
+import { HttpError } from '../utils/errors/HttpError';
 
 export function middleware(): RequestHandler {
   return (req, res, next) => {

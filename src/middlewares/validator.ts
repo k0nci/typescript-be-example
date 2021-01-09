@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import { ValidationError } from '../errors/ValidationError';
-import { Schema, Validator } from '../validator';
-import { parseErrors } from '../validator/errorUtils';
+import { ValidationError } from '../utils/errors/ValidationError';
+import { Schema, Validator } from '../utils/validator';
+import { parseErrors } from '../utils/validator/errorUtils';
 
 const validator = new Validator();
 

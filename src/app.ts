@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import middlewares from './utils/middlewares';
+import middlewares from './middlewares';
 
 // Routes
 import { router as livez } from './routes/livez';

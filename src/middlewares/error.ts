@@ -1,8 +1,8 @@
 import { ErrorRequestHandler } from 'express';
-import { NodeEnv } from '../../types/node';
-import { HttpError } from '../errors/HttpError';
-import { InternalServerError } from '../errors/InternalServerError';
-import { getLogger } from '../logger';
+import { NodeEnv } from '../types/node';
+import { HttpError } from '../utils/errors/HttpError';
+import { InternalServerError } from '../utils/errors/InternalServerError';
+import { getLogger } from '../utils/logger';
 
 const LOGGER = getLogger();
 
