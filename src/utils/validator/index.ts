@@ -1,32 +1,11 @@
-import ajv, { Schema, SchemaObject } from 'ajv';
-import { RequestHandler } from 'express';
-import { ValidationError } from '../errors/ValidationError';
-import { parseErrors } from './errorUtils';
+import ajv, { ErrorObject, SchemaObject as AjvSchemaObject, ValidateFunction } from 'ajv';
 
-export type IRequestSchema = {
-  query?: Schema;
-  params?: Schema;
-  body?: Schema;
-  headers?: Schema;
-};
-
-const defaultReqSchema: Readonly<SchemaObject> = {
-  type: 'object',
-  properties: {
-    query: { }, // Empty schema acts as any
-    params: { },
-    body: { },
-    headers: { },
-  },
-};
+export type Schema = AjvSchemaObject;
 
 export class Validator {
-  // TODO: Remove singleton?
-  private static instance: Validator;
-
   private ajv: ajv;
 
-  private constructor() {
+  constructor() {
     // TODO: Add ability to change config
     // TODO: Add ability to define custom keywords
     this.ajv = new ajv({
@@ -37,47 +16,13 @@ export class Validator {
     });
   }
 
-  public static getInstance(): Validator {
-    if (!Validator.instance) {
-      Validator.instance = new Validator();
-    }
-
-    return Validator.instance;
+  public compile<T = any>(schema: Schema): ValidateFunction<T> {
+    return this.ajv.compile<T>(schema);
   }
 
-  public middleware(schema: IRequestSchema): RequestHandler {
-    const reqSchema = {
-      ...defaultReqSchema,
-      properties: {
-        query: schema.query || defaultReqSchema.properties.query,
-        params: schema.params || defaultReqSchema.properties.params,
-        body: schema.body || defaultReqSchema.properties.body,
-        headers: schema.headers || defaultReqSchema.properties.headers,
-      },
-    };
-    // Compile schema to validate function
-    const validateFunction = this.ajv.compile(reqSchema);
-
-    return (req, res, next) => {
-      const reqData = {
-        query: req.query,
-        params: req.params,
-        body: req.body,
-        headers: req.headers,
-      };
-
-      // Validate request data
-      validateFunction(reqData);
-      // Get errors from validate function
-      const errors = validateFunction.errors || [];
-      const validationErrors = parseErrors(errors);
-
-      if (validationErrors.length !== 0) {
-        const err = new ValidationError();
-        return next(err);
-      }
-      return next();
-    };
+  public validate(schema: Schema, data: any): ErrorObject[] {
+    this.ajv.validate(schema, data);
+    return this.ajv.errors || [];
   }
 
 }
