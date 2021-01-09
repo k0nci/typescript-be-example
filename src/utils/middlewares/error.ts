@@ -6,44 +6,43 @@ import { getLogger } from '../logger';
 
 const LOGGER = getLogger();
 
-type ResBody = {
-  'error': string;
-  'stack'?: string;
+type IResBody = {
+  error: string;
+  details?: any;
+  stack?: string;
 };
 
 function normalizeMessage(err: HttpError): string {
   return err.message.toLowerCase().replace(/\s/g, '_');
 }
 
-function devError(err: HttpError): ResBody {
+function buildBodyDev(err: HttpError): IResBody {
+  const stack = err.message !== 'Validation error' ? err.stack : undefined;
   return {
+    stack,
     error: normalizeMessage(err),
-    stack: err.stack,
+    details: err.details,
   };
 }
 
-function prodError(err: HttpError): ResBody {
+function buildBodyProd(err: HttpError): IResBody {
   return {
     error: normalizeMessage(err),
   };
 }
 
 export function middleware(env: NodeEnv): ErrorRequestHandler {
-  return (err, req, res, next) => {
-    let httpErr: HttpError;
-    // Check if instance of HttpError
-    if (!err.status) {
-      httpErr = new InternalServerError();
-    } else {
-      httpErr = err;
-    }
+  let buildResBody: (error: HttpError) => IResBody;
+  if (env === NodeEnv.DEVELOPMENT) {
+    buildResBody = buildBodyDev;
+  } else {
+    buildResBody = buildBodyProd;
+  }
 
-    let body: ResBody;
-    if (env === NodeEnv.DEVELOPMENT) {
-      body = devError(httpErr);
-    } else {
-      body = prodError(httpErr);
-    }
+  return (err, req, res, next) => {
+    // Check if instance of HttpError
+    const httpErr: HttpError = err.status ? err : new InternalServerError();
+    const body = buildResBody(httpErr);
 
     if (httpErr.status >= 500) {
       LOGGER.error(err);

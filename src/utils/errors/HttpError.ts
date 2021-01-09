@@ -1,12 +1,14 @@
 export class HttpError extends Error {
   readonly status: number;
+  readonly details: any;
   readonly stack: string = '';
 
-  constructor(message: string, status: number, error?: Error) {
+  constructor(message: string, status: number, details: any = undefined, error?: Error) {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
 
     this.status = status;
+    this.details = details;
     this.name = this.constructor.name;
     Error.captureStackTrace(this, this.constructor);
     if (error) {
