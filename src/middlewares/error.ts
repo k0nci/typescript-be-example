@@ -17,11 +17,12 @@ function normalizeMessage(err: HttpError): string {
 }
 
 function buildBodyDev(err: HttpError): IResBody {
-  const stack = err.message !== 'Validation error' ? err.stack : undefined;
+  const stack = err instanceof InternalServerError ? err.stack : undefined;
   return {
-    stack,
     error: normalizeMessage(err),
     details: err.details,
+    // tslint:disable-next-line: object-shorthand-properties-first
+    stack,
   };
 }
 
