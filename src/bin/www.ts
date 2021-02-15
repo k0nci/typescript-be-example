@@ -1,9 +1,13 @@
 import 'source-map-support/register';
 import 'dotenv/config';
-import config from 'config';
 import http from 'http';
 import { app } from '../app';
 import { getLogger } from '../utils';
+
+if (!process.env['NODE_CONFIG_DIR']) {
+  process.env['NODE_CONFIG_DIR'] = `${process.cwd()}/config`;
+}
+import config from 'config';
 
 const LOGGER = getLogger();
 
@@ -15,10 +19,6 @@ function normalizePort(val: string = '8000') {
     return 8000;
   }
   return port;
-}
-
-if (!process.env['NODE_CONFIG_DIR']) {
-  process.env['NODE_CONFIG_DIR'] = `${process.cwd()}/config`;
 }
 
 // Get port from environment and store it in Express
