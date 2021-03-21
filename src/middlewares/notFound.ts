@@ -1,9 +1,8 @@
-import { RequestHandler } from 'express';
+import { Middleware } from 'koa';
 import { HttpError } from '../utils/errors/HttpError';
 
-export function middleware(): RequestHandler {
-  return (req, res, next) => {
-    const err = new HttpError('Not found', 404);
-    return next(err);
+export function middleware(): Middleware {
+  return (ctx, next) => {
+    throw new HttpError('Not found', 404);
   };
 }

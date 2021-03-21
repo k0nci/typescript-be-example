@@ -23,13 +23,9 @@ function normalizePort(val: string = '8000') {
 
 // Get port from environment and store it in Express
 const SERVER_PORT = normalizePort(config.get('service.port'));
-app.set('port', SERVER_PORT);
-
-// Create HTTP server.
-const server = http.createServer(app);
 
 // TODO: Add on error action
 
-server.listen(SERVER_PORT, () => {
+app.listen(SERVER_PORT, () => {
   LOGGER.info(`Listening on port ${SERVER_PORT}`);
 });

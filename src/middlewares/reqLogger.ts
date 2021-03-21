@@ -1,8 +1,11 @@
-import { RequestHandler } from 'express';
-import log4js from 'log4js';
-import { getLogger, LogLevels } from '../utils/logger';
+import { Middleware } from "koa";
+import log4js from "log4js";
+import { getLogger, LogLevels } from "../utils/logger";
 
-export function middleware(): RequestHandler {
+export function middleware(): Middleware {
+  return async (ctx, next) => {
+    await next();
+  };
   return log4js.connectLogger(getLogger(), {
     level: LogLevels.INFO,
     statusRules: [

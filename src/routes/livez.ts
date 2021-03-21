@@ -1,7 +1,9 @@
-import { Router } from 'express';
+import Router from '@koa/router';
 
-export const router = Router();
+export const router = new Router({
+  prefix: '/livez',
+});
 
-router.get('/', (req, res, next) => {
-  return res.status(204).end();
+router.get('/', (ctx, next) => {
+  ctx.status = 204;
 });

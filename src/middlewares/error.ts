@@ -1,4 +1,4 @@
-import { ErrorRequestHandler } from 'express';
+import { Middleware } from 'koa';
 import { NodeEnv } from '../types/node';
 import { HttpError } from '../utils/errors/HttpError';
 import { InternalServerError } from '../utils/errors/InternalServerError';
@@ -32,7 +32,7 @@ function buildBodyProd(err: HttpError): IResBody {
   };
 }
 
-export function middleware(env: NodeEnv): ErrorRequestHandler {
+export function middleware(env: NodeEnv): Middleware {
   let buildResBody: (error: HttpError) => IResBody;
   if (env === NodeEnv.DEVELOPMENT) {
     buildResBody = buildBodyDev;
@@ -40,14 +40,20 @@ export function middleware(env: NodeEnv): ErrorRequestHandler {
     buildResBody = buildBodyProd;
   }
 
-  return (err, req, res, next) => {
-    // Check if instance of HttpError
-    const httpErr: HttpError = err.status ? err : new InternalServerError();
-    const body = buildResBody(httpErr);
+  return async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      // Check if instance of HttpError
+      const httpErr: HttpError = err.status ? err : new InternalServerError();
+      const body = buildResBody(httpErr);
 
-    if (httpErr.status >= 500) {
-      LOGGER.error(err);
+      if (httpErr.status >= 500) {
+        LOGGER.error(err);
+      }
+      
+      ctx.status = httpErr.status;
+      ctx.body = body;
     }
-    return res.status(httpErr.status).json(body).end();
   };
 }

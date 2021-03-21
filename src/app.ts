@@ -1,5 +1,5 @@
-import express from 'express';
-import bodyParser from 'body-parser';
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
 import middlewares from './middlewares';
 
 // Routes
@@ -7,15 +7,15 @@ import { router as livez } from './routes/livez';
 
 const NODE_ENV = process.env.NODE_ENV;
 
-export const app = express();
+export const app = new Koa();
 
 app.use(middlewares.reqLogger());
+app.use(middlewares.error(NODE_ENV));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser({
+  enableTypes: ['json'],
+}));
 
-app.use('/livez', livez);
+app.use(livez.routes());
 
 app.use(middlewares.notFound());
-
-app.use(middlewares.error(NODE_ENV));
