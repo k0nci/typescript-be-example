@@ -1,6 +1,5 @@
 import 'source-map-support/register';
 import 'dotenv/config';
-import http from 'http';
 import { app } from '../app';
 import { getLogger } from '../utils';
 
