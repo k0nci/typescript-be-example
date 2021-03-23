@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { Middleware } from 'koa';
 import { ValidationError } from '../utils/errors/ValidationError';
 import { Schema, Validator } from '../utils/validator';
 import { parseErrors } from '../utils/validator/errors';
@@ -22,7 +22,7 @@ export type IRequestSchema = {
   headers?: Schema;
 };
 
-export function middleware(schema: IRequestSchema): RequestHandler {
+export function middleware(schema: IRequestSchema): Middleware {
   const reqSchema = {
     ...defaultReqSchema,
     properties: {
@@ -35,12 +35,12 @@ export function middleware(schema: IRequestSchema): RequestHandler {
   // Compile schema to validate function
   const validateFunction = validator.compile(reqSchema);
 
-  return (req, res, next) => {
+  return (ctx, next) => {
     const reqData = {
-      query: req.query,
-      params: req.params,
-      body: req.body,
-      headers: req.headers,
+      query: ctx.query,
+      params: ctx.params,
+      body: ctx.body,
+      headers: ctx.headers,
     };
 
     // Validate request data
@@ -51,7 +51,7 @@ export function middleware(schema: IRequestSchema): RequestHandler {
 
     if (validationErrors.length !== 0) {
       const err = new ValidationError(validationErrors);
-      return next(err);
+      throw err;
     }
     return next();
   };
