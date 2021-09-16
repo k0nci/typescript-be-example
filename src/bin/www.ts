@@ -1,5 +1,6 @@
 import 'source-map-support/register';
 import 'dotenv/config';
+import http from 'http';
 import { app } from '../app';
 import { getLogger } from '../utils';
 
@@ -20,11 +21,24 @@ function normalizePort(val: string = '8000') {
   return port;
 }
 
-// Get port from environment and store it in Express
+// Get port from environment
 const SERVER_PORT = normalizePort(config.get('service.port'));
 
-// TODO: Add on error action
+// Create HTTP server.
+const server = http.createServer(app.callback());
 
-app.listen(SERVER_PORT, () => {
+function onError(error: Error & { code: string }) {
+  switch (error.code) {
+    case 'EADDRINUSE': {
+      LOGGER.error(`${SERVER_PORT} is already in use`);
+      process.exit(1);
+    }
+    default:
+      throw error;
+  }
+}
+server.on('error', onError);
+
+server.listen(SERVER_PORT, () => {
   LOGGER.info(`Listening on port ${SERVER_PORT}`);
 });
